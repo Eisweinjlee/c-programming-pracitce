@@ -18,30 +18,33 @@
 <p>数据类型：char, int, float, double, bool, long int, long double, etc.<br>
 常量：转义字符\n, \t, \b, \0，宏定义符号常量#define</p>
 <p>sizeof(object) 函数可以查看各种数据类型的大小。</p>
-<p>变量定义声明：</p>
+<h3 id="变量定义声明：">1.1 变量定义声明：</h3>
 <pre><code>(signed/unsigned) + (long/short) + int/char/... + VarName
 </code></pre>
 <p>取值范围：int -&gt; 4 bytes<br>
 signed int: <span class="katex--inline"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo stretchy="false">[</mo><mo>−</mo><msup><mn>2</mn><mn>31</mn></msup><mo separator="true">,</mo><msup><mn>2</mn><mn>31</mn></msup><mo>−</mo><mn>1</mn><mo stretchy="false">]</mo></mrow><annotation encoding="application/x-tex">[-2^{31} , 2^{31}-1]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 1.06411em; vertical-align: -0.25em;"></span><span class="mopen">[</span><span class="mord">−</span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height: 0.814108em;"><span class="" style="top: -3.063em; margin-right: 0.05em;"><span class="pstrut" style="height: 2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">3</span><span class="mord mtight">1</span></span></span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right: 0.166667em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height: 0.814108em;"><span class="" style="top: -3.063em; margin-right: 0.05em;"><span class="pstrut" style="height: 2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">3</span><span class="mord mtight">1</span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right: 0.222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right: 0.222222em;"></span></span><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord">1</span><span class="mclose">]</span></span></span></span></span> 首位符号位，补码表达<br>
 unsigned int: <span class="katex--inline"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo stretchy="false">[</mo><mn>0</mn><mo separator="true">,</mo><msup><mn>2</mn><mn>32</mn></msup><mo stretchy="false">]</mo></mrow><annotation encoding="application/x-tex">[0, 2^{32}]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 1.06411em; vertical-align: -0.25em;"></span><span class="mopen">[</span><span class="mord">0</span><span class="mpunct">,</span><span class="mspace" style="margin-right: 0.166667em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height: 0.814108em;"><span class="" style="top: -3.063em; margin-right: 0.05em;"><span class="pstrut" style="height: 2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">3</span><span class="mord mtight">2</span></span></span></span></span></span></span></span></span><span class="mclose">]</span></span></span></span></span></p>
-<p>字符与字符串：<br>
-字符char（1B）是个特殊的int，使用时可以通用，用ACSII码输出。当%c表示时查表输出字符，%d表示时ASCII的十进制值输出。<br>
+<h3 id="字符与字符串：">1.2 字符与字符串：</h3>
+<p>字符char（1B）是个特殊的int，使用时可以通用，用ACSII码输出。当%c表示时查表输出字符，%d表示时ASCII的十进制值输出。<br>
 字符串，多个字符组成的字符数组char str[num]，但结尾一定不能漏掉转义字符’\0’表示字符串结束。</p>
-<p>运算符优先级：<br>
-括号、指针；正负号<span class="katex--inline"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>±</mo></mrow><annotation encoding="application/x-tex">\pm</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.66666em; vertical-align: -0.08333em;"></span><span class="mord">±</span></span></span></span></span>、取地址&amp;、自加减；加减乘除取余…</p>
-<p>类型转换：<br>
-自动转换：a = 1+0.2; 输出结果自动转换为a的类型。<br>
+<h3 id="运算符优先级：">1.3 运算符优先级：</h3>
+<p>括号、指针；正负号<span class="katex--inline"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>±</mo></mrow><annotation encoding="application/x-tex">\pm</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 0.66666em; vertical-align: -0.08333em;"></span><span class="mord">±</span></span></span></span></span>、取地址&amp;、自加减；加减乘除取余…<br>
+如果写过于复杂的表达，建议查表或测试。</p>
+<h3 id="类型转换：">1.4 类型转换：</h3>
+<p>自动转换：a = 1+0.2; 输出结果自动转换为a的类型。<br>
 强制转换：a = (int) 100/3; 强制赋值给a的结果为整型。</p>
+<h3 id="关系与逻辑运算">1.5 关系与逻辑运算</h3>
 <p>关系运算符：<br>
-等于==，不等于!=，小于等于&lt;=，大于等于&gt;=，小于&lt;，大于&gt;。判断关系，输出真1假0。</p>
-<p>逻辑运算符：<br>
+等于==，不等于!=，小于等于&lt;=，大于等于&gt;=，小于&lt;，大于&gt;。判断关系，输出真1假0。<br>
+逻辑运算符：<br>
 非!a，与a&amp;&amp;b，或a||b。判断关系，输出真1假0。</p>
-<p>C语言短路原则：</p>
+<h3 id="c语言短路原则：">1.6 C语言短路原则：</h3>
 <pre><code>int a=3,b=3;
 (a=0)&amp;&amp;(b=5); // output: a=0, b=3
 (a=1)||(b=5); // output: a=1, b=3
 </code></pre>
 <p>根据优先级，只运行到了(a=0)&amp;&amp;(某个表达式)，就短路了(b=5)，b没被赋值。</p>
+<h3 id="其他特殊符号">1.7 其他特殊符号</h3>
 <p>复合赋值运算：<br>
 +=，-=，/=，*=，%=	 //数学运算<br>
 &amp;=， |=，^=，~= //位运算</p>
