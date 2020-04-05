@@ -1,0 +1,94 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>5. Functions</title>
+  <link rel="stylesheet" href="https://stackedit.io/style.css" />
+</head>
+
+<body class="stackedit">
+  <div class="stackedit__html"><h2 id="函数">5. 函数</h2>
+<p>在C语言中，一个项目中只能有一个main函数，程序都是从main中开始执行的。但是如果全部内容都在main中写出来的话，无法避免冗长的程序。为了减少变量命名过多、同功能部分重复出现、不方便修改同功能部分，C语言引用了函数的功能。</p>
+<h3 id="函数声明">5.1 函数声明</h3>
+<pre><code>类型名 函数名(参数类型);	//提前声明
+类型名 函数名(参数列表)
+   {函数体} 				//函数体中，遇到return就完成
+</code></pre>
+<p>严谨做法可以在代码开头进行声明，避免纠结书写的顺序。<br>
+例：</p>
+<pre><code>int sum(int, int); //前置声明
+int sum(int x, int y)
+{	return x+y;}
+</code></pre>
+<p>注意，函数名在C语言中也是一个地址量，sum保存了一个地址，指向整个函数，因此有很多灵活运用。</p>
+<h3 id="参数与指针">5.2 参数与指针</h3>
+<p>参数有两类情况：<br>
+实参，在主函数中给函数传的参数，真正拥有数值的；<br>
+形参，在函数中获得的参数，本质上和原本的实参除了数值一样没有关系。</p>
+<p>函数参数，可以传入数值，也可以传入地址：<br>
+传值，将实参的数值传给函数的形参进行计算；<br>
+传址，可以将实参的地址传入函数，从而能够读写实参。</p>
+<p>参数的数量利用stdarg.h可以改变：<br>
+va_list, va_start, va_arg, va_end等函数</p>
+<h3 id="函数与指针">5.3 函数与指针</h3>
+<p>魔幻定义再度出现：<br>
+指针函数：<code>int* func();</code>返回一个int类型的指针变量，但注意不要返回局部变量(Local value)的指针，因为函数中变量用后会清空。</p>
+<p>函数指针：<code>int (*fp)(int);</code>fp是个指针变量，指向一个无名函数，在取值符号操作后，定位了一个函数（这个函数有一个int参数，返回一个int）。方便使用，可以改变fp指向的函数，改变调用的函数。</p>
+<p>函数指针可以作为函数的参数，例如：</p>
+<pre><code>int calc(int (*fp)(int,int), int x, int y);
+// 调用：
+calc(sum, x, y); // sum是一个已经定义的函数名
+</code></pre>
+<p>在这个calc函数中，可以对输入函数指针fp进行操作，本质就是获得一个地址。</p>
+<h3 id="局部变量全局变量">5.4 局部变量/全局变量</h3>
+<p>在5.2中提到了函数中的局部变量，局部变量即定义在函数中、复合语句中，不会传到外面的变量。</p>
+<p>局部变量(Local variables)存在于：子函数中，主函数与其他函数用不了这一子函数中定义的变量；复合语句中，比如for(int i=0;i&lt;n;i++)，这里定义的i不能够被for语句外面用到。</p>
+<p>全局变量(Global variables)可以本整个文件的所有函数调用，只需要定义在所有函数的上面：</p>
+<pre><code>int global_variable = 0; //全局变量
+int func(int num)
+{
+    int local_variable = 0;
+    extern int rear_global; //在后面定义的全局变量用extern可以
+    local_variable = global_variable; //全局变量可被调用
+    return local_variable;
+}
+int rear_global = 555;
+</code></pre>
+<p>如果在子函数中定义了与全局变量同名的变量，优先有新定义的局部变量。</p>
+<pre><code>int a = 666, b = 555;
+void func()
+{
+    int b;
+    b = 777;
+    //输出a = 666, b = 777
+}
+</code></pre>
+<p>extern关键字：提示编译器在文件和项目中去找这个全局变量。作用：1. 对于后面才定义的全局变量，可以在前面的函数中先用上； 2. 这现在这个文件中没有的变量，可以去项目中别的文件中找这个全局变量。</p>
+<h3 id="简述作用域">5.5 简述作用域</h3>
+<p>我们可以看到，各种变量应当是有明确的作用域的，C语言中有4个作用域，这里简单介绍一下：</p>
+<ol>
+<li>代码块作用域：{ }中的空间，里面定义的变量不影响外面；</li>
+<li>文件作用域：在一个文件中的，包含各个函数和全局变量。定义了就可以在文件后序的语句中调用，除非用前置声明或者extern int；</li>
+<li>原型作用域：函数前置声明时的参数括号内( )，一般不用写参数名，但里面写参数名不会影响函数本体的参数名；</li>
+<li>函数作用域：很少用，主要和goto语句相关。</li>
+</ol>
+<h3 id="定义、声明、链接">5.6 定义、声明、链接</h3>
+<p>定义：定义变量、函数等，在内存中分配适当的空间。</p>
+<p>声明：如同函数的前置声明、extern声明，仅仅作用于编译器，提示编译器可以在后序部分找到。</p>
+<p>链接：把需要的所有文件打包形成可被执行的二进制代码的过程。我们写好的C代码，首先被编译器解释为源文件；下一步源文件和各种lib被链接，成为可执行的code。<br>
+链接错误：找不到使用的函数、找不到对于的包、各类冲突等等</p>
+<p>所有的变量有3中链接属性：external、internal、none。<br>
+文件作用域里的变量和函数，都拥有external和internal属性之一。<br>
+其他组用域的变量只有none属性。</p>
+<p>static关键字：可以将局部变量变成【静态的局部变量】，external属性变internal。功能：在函数中定义一个</p>
+<pre><code>void func()
+{static int i = 0; i++;
+}
+</code></pre>
+<p>那么，这个i只能在func中使用，而且函数返回后不清空，在别的函数中定义的i不影响这个internal的i，而且i还可以在每次调用func中累加。</p>
+</div>
+</body>
+
+</html>
