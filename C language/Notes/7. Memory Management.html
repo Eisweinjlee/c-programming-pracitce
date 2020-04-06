@@ -1,0 +1,45 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>7. Memory Management</title>
+  <link rel="stylesheet" href="https://stackedit.io/style.css" />
+</head>
+
+<body class="stackedit">
+  <div class="stackedit__html"><h2 id="内存管理">7. 内存管理</h2>
+<h3 id="动态内存管理">7.1 动态内存管理</h3>
+<p>为了更灵活管理内存，以便可以从底层提高代码效率，可以利用stdlib.h的代码来管理内存。</p>
+<p>void *malloc(size_t size); 申请对应大小的空间<br>
+void是可以强制转换为任何数据类型，所以不要少了强制转换。</p>
+<pre><code>int *ptr;
+ptr = (int*)malloc(sizeof(int));
+char *pc;
+char = (char*)malloc(5*sizeof(char));
+</code></pre>
+<p>void* calloc(int num, size_t size); 动态申请num*size的空间并赋值0<br>
+等于<code>malloc</code>与<code>memset(ptr, 0, N*sizeof(int))</code>的合并。</p>
+<p>void* realloc(void* ptr, size_t size); 重新分配，动态扩容、</p>
+<pre><code>ptr = (int*)realloc(ptr, count*sizeof(int));
+</code></pre>
+<p>void free(void* ptr); 释放空间，删去指针</p>
+<p>在&lt;string.h&gt; 中有可以给内存空间赋值的函数：</p>
+<pre><code>memset(ptr, 0, N*sizeof(int)); //将ptr开始的N*sizeof(int)空间赋值0
+memcpy(ptr2, ptr1, 10); //将10个数据从ptr1挪到ptr2
+</code></pre>
+<h3 id="内存分布规律">7.2 内存分布规律</h3>
+<p>我们可以通过查询地址来观察各种变量的保存位置，能发现，从低到高排序：<br>
+func函数 -&gt; str1、str2字符变量 -&gt; global_init_var1、global_init_var2全局变量 -&gt; static_init_var 静态变量 -&gt; static_uninit_var 未初始化静态变量 -&gt; global_uninit_var 未初始化全局变量 -&gt; malloc_var 动态申请空间位置 -&gt; local_var2、local_var1 局部变量</p>
+<p>C语言中，内存分布是按照一定规律安排的（由低到高）：</p>
+<p>代码段(Text segment)：一般是只读常量+字符串常量</p>
+<p>数据段(Initialized data segment)：已初始化的全局变量、局部静态变量</p>
+<p>BSS段(Block-started-by-symbol)：未初始化的全局变量、静态变量</p>
+<p>堆(heap)：特点是从低到高分配，malloc动态分配直到free结束生命周期</p>
+<p>(一部分未分配空间)</p>
+<p>栈(stack)：特点是从高处压栈，存放局部变量，自动释放回收空间，生命周期从局部中申请到函数结束。</p>
+</div>
+</body>
+
+</html>

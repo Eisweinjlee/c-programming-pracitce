@@ -1,0 +1,57 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>8. Macro</title>
+  <link rel="stylesheet" href="https://stackedit.io/style.css" />
+</head>
+
+<body class="stackedit">
+  <div class="stackedit__html"><h2 id="宏定义相关">8. 宏定义相关</h2>
+<h3 id="宏定义">8.1 宏定义</h3>
+<p>可以用来替换字符、文件包含、条件编译。<br>
+替换字符的用法：</p>
+<pre><code>#define PI 3.14 // 用PI替代3.14（约定用全部大写）
+#undef PI // 这句话以后PI失效
+</code></pre>
+<p>用宏定义来写“函数”——带参数的宏定义：</p>
+<pre><code>#define MAX(x,y) ((x)&gt;(y))?(x):(y)
+//后面的括号很重要
+</code></pre>
+<p>宏定义是机械地替换字符，对比下面两个：</p>
+<pre><code>#define SQUARE1(x) x*x
+#define SQUARE2(x) (x)*(x)
+// 在执行SQUARE(5+1)的时候：
+SQUARE1(5+1)是5+1*5+1=5+5+1=11
+SQUARE2(5+1)是6*6=36
+</code></pre>
+<p>内联函数可以带来带参数宏定义同等的效率，编译的时候直接把函数替换进主函数里面：</p>
+<pre><code>inline (类型) (函数名)(参数);
+inline int square(int x){;}
+</code></pre>
+<h3 id="预处理运算符">8.2 预处理运算符#</h3>
+<p>功能1：在宏定义中把变量变成字符串</p>
+<pre><code>#define STR(s) # s //注意不要少了空格，s不是变量
+printf("%s\n",STR(adsadasdw)); //输入的s直接变成内容输出屏幕
+</code></pre>
+<p>很方便打印数据调试：</p>
+<pre><code>#define DEBUG_VALUE(v) printf(#v"is equal to %d．\n"，v)
+</code></pre>
+<p>功能2：##记号连接运算，把两个符号连接起来</p>
+<pre><code>#define LINK(x,y) x##y
+</code></pre>
+<p>功能3：简化输入</p>
+<pre><code>#define P(…) printf (__VA_ARGS__)
+P(“hello”); //会被展开成 printf（“hello”）；
+P(“w=%d, s=$%.2f\n”,w,s); //会被展开printf（“w=%d,s=$%.2f\n”,w,s）；
+
+//#可以将后面的变成字符串，所以更简化
+#define P(…) printf (#__VA_ARGS__)
+P(A,B,C); //快速调用
+</code></pre>
+</div>
+</body>
+
+</html>

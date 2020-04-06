@@ -1,0 +1,84 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>9. Structure</title>
+  <link rel="stylesheet" href="https://stackedit.io/style.css" />
+</head>
+
+<body class="stackedit">
+  <div class="stackedit__html"><h2 id="结构体">9. 结构体</h2>
+<p>C语言中的数据类型很多，但是我们也可以自己定义属于需要的数据类型，可以用结构体。又可能我们想在数组中存放不同的数据种类，也可以用到结构体。</p>
+<h3 id="结构体的定义">9.1 结构体的定义</h3>
+<pre><code>struct 结构名 // 一般首字母大写
+{
+    结构体成员1；
+    结构体成员2；
+} (结构体变量名); //可以直接定义一个结构体变量
+</code></pre>
+<p>例如一本书作为结构体:</p>
+<pre><code>struct Book
+{	char title[50];
+    char author[50];
+    float price;
+} book;
+//调用：
+book.title, book.price, book.author;
+</code></pre>
+<p>注意结构体也会内存对齐：<br>
+如果结构体有char, int, char顺序，保存会char,int,char都占4字节；<br>
+如果顺序是char, char, int顺序，保存会2个char占了2个字节，然后空2个，和后面int对齐。</p>
+<p>结构体嵌套：<br>
+结构体中的成员是结构体</p>
+<pre><code>struct Date{
+    int year;
+    int month;
+    int day;
+};
+struct Book{
+    char title[50];
+    char author[50];
+    struct Date date; // 嵌套一个结构体
+};
+</code></pre>
+<p>结构体数组：</p>
+<pre><code>struct Book book[5]; // 5个Book结构体
+book[0].title, book[0].author; // 调用
+</code></pre>
+<p>结构体互相赋值：</p>
+<pre><code>struct Book book1, book2;
+// book1 各种赋值后
+book2 = book1; // 可以直接赋值
+</code></pre>
+<h3 id="结构体指针">9.2 结构体指针</h3>
+<p>结构体变量名也是一个指针，声明的时候：</p>
+<pre><code>struct Book book, *pt;
+pt = &amp;book; //一定要把指针赋值一个已有的变量
+//解引用有个新的符号-&gt;
+(*pt).author; (*pt).title; // 这个是传统的解引用方法
+pt-&gt;author; pt-&gt;title; //利用指针解引用，等价的方法
+</code></pre>
+<p>malloc分配结构体空间，要用结构体指针：</p>
+<pre><code>struct Book *book;
+book = (struct Book*)malloc(sizeof(struct Book));
+</code></pre>
+<h3 id="结构体和函数">9.3 结构体和函数</h3>
+<p>结构体可以作为参数，输入函数：</p>
+<pre><code>void func(struct Book book) // 记得不要漏了struct Book
+</code></pre>
+<p>用结构体指针传入函数：</p>
+<pre><code>void func(struct Book *pbook)
+{
+    pbook-&gt;author;
+    pbook-&gt;title;
+}
+</code></pre>
+<p>返回结构体的函数：</p>
+<pre><code>struct Book func(var...)
+</code></pre>
+</div>
+</body>
+
+</html>
