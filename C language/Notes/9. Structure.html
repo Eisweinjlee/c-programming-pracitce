@@ -78,6 +78,28 @@ book = (struct Book*)malloc(sizeof(struct Book));
 <p>返回结构体的函数：</p>
 <pre><code>struct Book func(var...)
 </code></pre>
+<h3 id="共用体union">9.4 共用体Union</h3>
+<p>类似structure，但是所有成员共用一个地址，最后被赋值的成员被保留。</p>
+<pre><code>union 共用体名称
+{	共用体成员1;
+    共用体成员2;
+};
+</code></pre>
+<p>性质：共用体所有成员，共用一个地址；只有最后一个赋值是可以用的，其他会被覆盖，输出错误；共用体的尺寸是大于等于最大的成员（大于的情况是因为内存对齐）</p>
+<h3 id="枚举类型enum">9.5 枚举类型enum</h3>
+<p>给一堆新的变量名赋值整数值：</p>
+<pre><code>enum 枚举类型名称 {枚举值1，枚举值2，... };
+//例如：
+enum Week {sun, mon, tue, wed, thu...}; //默认从0开始递增
+enum Week {mon=1, tue, wed, ...}; //被要求从1开始递增，sun=7
+</code></pre>
+<p>枚举类型变量声明</p>
+<pre><code>enum Week {mon=1, tue, wed, ...};
+enum Week day;
+// 则day可以被赋值Week中的内容
+day = mon; //等价于day=1;
+printf("%d == %d\n", day, mon);
+</code></pre>
 </div>
 </body>
 
