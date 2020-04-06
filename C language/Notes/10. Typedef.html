@@ -1,0 +1,51 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>10. Typedef</title>
+  <link rel="stylesheet" href="https://stackedit.io/style.css" />
+</head>
+
+<body class="stackedit">
+  <div class="stackedit__html"><h2 id="typedef-语句">10. Typedef 语句</h2>
+<p>给数据类型起别名：用不同名字来定义变量：</p>
+<pre><code>typedef int integer;
+</code></pre>
+<p>typedef和#define的差别：</p>
+<ol>
+<li>宏定义是机械的替换，所以可以用 unsigned integer，而typedef不可以用unsigned integer；</li>
+<li>用<code>typedef int* PINT</code>是合法的，可以用<code>PINT px,py,pz;</code>定义指针；而在<code>#define PINT int*</code>的时候，<code>PINT px,py,pz;</code>只有px是指针，py和pz还是int。</li>
+</ol>
+<p>语法上，可以同时给int起别名和指针起别名：</p>
+<pre><code>typedef int INTEGER, *PINT; // 同时给int和int*改变
+</code></pre>
+<p>typedef优点1，可以简化struct长长的名字，真正成为属于自己的数据类型：</p>
+<pre><code>typedef struct Date
+{ ....
+} DATE, *PDATE;
+DATE x,y,z; //方便定义结构体
+</code></pre>
+<p>typedef优点2，超级复杂魔幻的定义可以简化了，下面举例：<br>
+A. 数组指针 <code>int (*ptr)[3];</code>本质ptr是指向数组名</p>
+<pre><code>typedef int (*PTR_TO_ARRAY)[3];
+PTR_TO_ARRAY pp = &amp;array; // 定义方法
+</code></pre>
+<p>B. 函数指针<code>int (*func)(void);</code>本质func是指向函数名</p>
+<pre><code>typedef int (*PTR_TO_FUN)(void);
+PTR_TO_FUN pp = &amp;func; // 定义方法
+</code></pre>
+<p>C. 函数指针数组<code>int*(*array[3])(int);</code>数组中的指针，指向一个指针函数</p>
+<pre><code>typedef int *(*PTR_TO_FUN)(int);
+PTR_TO_FUN array[3] = {&amp;funA, &amp;funB, &amp;funC};
+</code></pre>
+<p>D. 魔幻<code>void (*funA(int, void (*funB)(int)))(int);</code>先分析，funA和funB都是函数指针，那我们就定义函数指针吧</p>
+<pre><code>typedef void (*PTR_TO_FUN)(void);
+PTR_TO_FUN funA(int, PTR_TO_FUN);
+</code></pre>
+<p>可以把复杂的定义，难以理解的定义，变成好理解的语言。</p>
+</div>
+</body>
+
+</html>
