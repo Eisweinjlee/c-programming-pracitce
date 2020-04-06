@@ -1,0 +1,69 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>12. File</title>
+  <link rel="stylesheet" href="https://stackedit.io/style.css" />
+</head>
+
+<body class="stackedit">
+  <div class="stackedit__html"><h2 id="文件操作">12. 文件操作</h2>
+<p>系统中的文件简单来说分两类：文本文件（我们看得懂的）、二进制文件（给计算机读的）。<br>
+对于文件的操作无非三步：打开、(读取/写入)、关闭</p>
+<h3 id="打开关闭">12.1 打开&amp;关闭</h3>
+<p>打开文件<code>*fopen(path, mode)</code><br>
+参数：path可以是绝对路径，可以是相对路径。如果没写路径，表示在同一文件夹里的文件；mode是个字符串，表示读取的方法：</p>
+<pre><code>mode: 	"r"只读，"w"覆盖写入，"a"写入末尾添加
+	    "r+"读写覆盖需要的空间，"w+"读写覆盖，"a+"读写末尾
+	    "b"可以和前面6个结合，二进制文件
+</code></pre>
+<p>区分二进制的原因：C语言用\n换行，而Win用\r\n，Mac用\r，Unix用\n。以文本模式，会自动把代码的\n换为对应系统的。（所以存进win后，多一位字符）</p>
+<p>关闭文件<code>fclose(*path)</code><br>
+这一步【很重要】，除了会清理回收以外，关键的保存文件工作也在这里完成，没有这步就没有写入到文件中。<br>
+而且如果想切换模式（读写切换），一定要先fclose，换一个模式fopen。</p>
+<p>最简单的读取例子：</p>
+<pre><code>FILE *fp; //定义FILE类型指针
+if(fp = fopen("hello.txt","r") == NULL)
+{exit(EXIT_FAILURE);} //没有这个文件就报错
+while((ch=getc(fp)) != EOF) //文件末尾是EOF
+{putchar(ch);}
+fclose(fp); //关键一步
+</code></pre>
+<h3 id="各种顺序读写">12.2 各种顺序读写</h3>
+<p>字符读写：<br>
+读：<code>getc(FILE *fp)</code>和<code>fgetc(FILE *fp)</code>读出一个字符，并将位置指示器往后推一个。返回值：unsigned char的int数值，读出为空或文件结尾则EOF。<br>
+写：<code>putc(char c, FILE *fp)</code>和<code>fputc(char c, FILE *fp)</code>写入一个字符c。<br>
+getc和fgetc，以及putc和fputc差别：没有f的是宏定义实现的，对于参数的安全性低；有f的是函数实现的，安全性高。</p>
+<p>字符串读写：<br>
+读：<code>int fgets(char *str, int size, FILE *fp)</code>从fp读取字符串存进str中，直到1.达到size限制的大小 2.字符’\0’、’\n’ 3. 结束EOF或错误，返回NULL，三个条件之一就结束。<br>
+写：<code>int fputs(char *str, FILE *fp)</code>往fp中写入str的字符串直到遇到’\0’，但是’\0’不会写进文本文件因为没必要。</p>
+<p>对于fp文件的位置指示器是否到底，我们可以用<code>int feof(FILE *fp)</code>检查，返回0还没结束，返回1的时候就结束了，顺序读操作会返回EOF。</p>
+<p>一种如同<code>printf()</code>和<code>scanf()</code>一样熟悉快乐的读写方法：<br>
+读：<code>fscanf(FILE *fp, ".....", *pVAR);</code>后面参数和scanf一模一样,字符串和相关变量地址<br>
+写：<code>fprintf(FILE *fp, ".....", VAR);</code>后面参数和printf一模一样,字符串和相关变量</p>
+<p>可以用二进制文件的方式存入结构体（说不定各种类型都可以）：<br>
+读：<code>fread(接受赋值的结构体变量名, sizeof(struct xxx), int num, *fp);</code>从文件fp中，获取num个尺寸为size的顺序存储的东西（这里是结构体）<br>
+写：<code>fwrite(结构体变量名, sizeof(struct xxx), int num, *fp);</code>向文件fp中，存入num个顺序存储的东西，尺寸为size</p>
+<h3 id="随机读取">12.3 随机读取</h3>
+<p>顺序读写就是永远从头开始推动着位置指示器去读取，随机读取就是推着位置指示器读想要的。</p>
+<p>位置指示器在哪？<code>long int ftell(FILE *fp)</code>返回长整形数字，告诉用户位置指示器在第几个字符的位置。</p>
+<p>回到文件头位置<code>rewind(FILE *fp)</code>见位置指示器丢回0。</p>
+<p>移动位置指示器<code>fseek(FILE *fp, long int offset, int whence)</code><br>
+参数：offset从whence开始偏移多少字节（左-右+）；whence是指文件的哪个位置，已经有预设参数：</p>
+<pre><code>SEEK_SET，文件头；	SEEK_CUR，目前位置；	SEEK_END，文件尾；
+//2进制的时候，有些操作系统不支持文件尾
+</code></pre>
+<p>成功返回0，失败返回非0值。</p>
+<p>例，存了结构体数组，读取第二个结构体变量：</p>
+<pre><code>if((fp=fopen("file.txt","rb")) == NULL)
+{exit(EXIT_FAILURE);}
+fseek(fp, sizeof(struct Xxx), SEEK_SET); //跳过一个，到第二个
+fread(&amp;xxx1, sizeof(struct Xxx), 1, fp); //读取
+fclose(fp);
+</code></pre>
+</div>
+</body>
+
+</html>
