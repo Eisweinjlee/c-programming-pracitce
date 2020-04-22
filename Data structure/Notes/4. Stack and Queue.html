@@ -1,0 +1,107 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>4. Stack and Queue</title>
+  <link rel="stylesheet" href="https://stackedit.io/style.css" />
+</head>
+
+<body class="stackedit">
+  <div class="stackedit__html"><h2 id="栈和队列">4. 栈和队列</h2>
+<h3 id="栈-stack">4.1 栈 Stack</h3>
+<p>栈也是一种线性结构，满足后进先出(last in first out)原则，要求只在线性末尾进行删除和插入操作。</p>
+<p>对于栈来说，表尾称作为<strong>栈顶</strong>(top)，相应的表头称作为<strong>栈底</strong>(bottom)。</p>
+<p><strong>栈的插入和删除操作</strong><br>
+栈的插入操作Push：也叫做进栈、压栈、入栈。<br>
+栈的删除操作Pop：也叫出栈、弹栈。</p>
+<h3 id="栈的顺序存储结构">4.2 栈的顺序存储结构</h3>
+<p>最开始的初始化的栈没有任何数据，栈顶和栈底都在同一个位置，然后数据进入后，栈顶位置向高地址+1，指向下一个空位置，容量变大。</p>
+<p><strong>栈的抽象数据类型定义</strong></p>
+<pre><code>ADT Stack{
+    D={ai | i = 1,2,...,n}
+    R={&lt;ai-1,ai&gt; | ai-1,ai属于D}
+	an是栈顶，a1是栈底
+基本操作
+	InitStack
+	Pop
+	Push
+	...
+}ADT Stack
+</code></pre>
+<p><strong>栈的结构体定义</strong></p>
+<pre><code>typedef struct{
+    ElemType *base; //栈底指针
+    ElemType *top; //栈顶指针
+	int stackSize; //栈目前可以容量
+} sqStack;
+</code></pre>
+<p><strong>基本操作</strong></p>
+<ul>
+<li>InitStack(sqStack *s) 初始化栈</li>
+<li>StackEmpty(sqStack *s) 栈是否为空</li>
+<li>ClearStack(sqStack s) 清空一个栈，直接s.top = s.base;就可以了</li>
+<li>DestroyStack(sqStack *s) 要释放内存</li>
+<li>Push(sqStack *s, ElemType e) 压栈操作</li>
+<li>Pop(sqStack *s, ElemType *e) 出栈操作</li>
+</ul>
+<h3 id="栈的链式存储结构">4.3 栈的链式存储结构</h3>
+<p>栈很少采用链式存储的方式，因为这样的链表就只是受限于头部操作的单链表而已。（在头部插入和弹出）</p>
+<p><strong>特点</strong>：链表头指针指向栈顶；不需要头结点；不会存在栈满的情况；空栈相当于头指针指向空。</p>
+<p><strong>栈的结构体定义</strong></p>
+<pre><code>typedef struct StackNode{
+    ElemType data;
+    struct StackNode *next;
+} StackNode, *LinkStack;
+</code></pre>
+<h3 id="队列-queue">4.4 队列 Queue</h3>
+<p>队列是一种符合先进先出(First in first out)原则的线性表，在表的一端（末尾）进入，在另一端（头部）弹出，与排队类似的。</p>
+<p><strong>队列的抽象数据类型定义</strong></p>
+<pre><code>ADT Queue{
+    D={ai|i=1,2,...,n}
+    R={&lt;ai-1,ai&gt;|ai-1,ai属于D}
+基本操作：
+	初始化、销毁、清空、队列长度...
+} ADT Queue
+</code></pre>
+<h3 id="队列的顺序存储结构">4.5 队列的顺序存储结构</h3>
+<pre><code>typedef struct{
+    ElemType *base; //初始空间分配指针
+    int front; //头部指针
+    int rear; //尾部指针
+} sqQueue
+</code></pre>
+<p><strong>队列的基本操作</strong></p>
+<ul>
+<li>InitQueue(SqQueue *Q) 初始化队列</li>
+<li>QueueLength(SqQueue Q) 队列长队</li>
+<li>EnQueue(SqQueue *Q, ElemType e) 入列</li>
+<li>DeQueue(SqQueue *Q, ElemType *e) 出队列</li>
+<li>GetHead(SqQueue Q) 取队头元素</li>
+</ul>
+<h3 id="队列的链式存储结构">4.6 队列的链式存储结构</h3>
+<p>当无法确定队列的长度时，可以采用链式队列。</p>
+<p><strong>链队列结构定义</strong></p>
+<pre><code>#define MAX 100
+typedef struct Qnode{
+    ElemType data;
+    struct Qnode* next;
+} Qnode, *QueuePtr;
+typedef struct{
+	QueuePtr front;
+	QueuePtr rear;
+} LinkQueue;
+</code></pre>
+<p><strong>链队列初始化</strong></p>
+<pre><code>void InitQueue(LinkQueue *Q){
+    Q.front = Q.rear = (QueuePtr)malloc(sizeof(Qnode));
+    if(!Q.front) exit(0);
+    Q.front-&gt;next = NULL;
+}
+</code></pre>
+<p>多数情况下队列都采用链式结构，因为顺序结构会导致front和rear在不断前进后倒转位置，而且会满队列。</p>
+</div>
+</body>
+
+</html>
