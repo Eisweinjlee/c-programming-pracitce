@@ -1,0 +1,84 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>7. Tree 2</title>
+  <link rel="stylesheet" href="https://stackedit.io/style.css" />
+</head>
+
+<body class="stackedit">
+  <div class="stackedit__html"><h2 id="树的扩展">7. 树的扩展</h2>
+<h3 id="线索二叉树">7.1 线索二叉树</h3>
+<p><strong>线索二叉树（Binary threaded tree）</strong> 的需求：在用上面的方法创建树的时候，空指针<code>^</code>浪费了很多很多空间，所以想要节约空间。因此，闲着也是闲着，可以利用<code>^</code>来记录该结点的前驱后继。</p>
+<p><img src="https://user-images.githubusercontent.com/26374671/80346477-c556c180-88a5-11ea-97c6-799417462fb9.png" alt="线索二叉树"><br>
+如果利用中序遍历法，如上面图是个特例，访问顺序是：<strong>H</strong> D <strong>I</strong> B <strong>E</strong> A <strong>F</strong> C <strong>G</strong>。刚好每隔一个访问的节点，就有一个叶节点，叶节点有没被利用的两个指针域可以拿来存放前驱和后继。</p>
+<p>大多数情况下，不会有刚好隔一个就有一个叶结点。这样的话，我们可以重新设计二叉树结点，用空间换时间，可以用bool型：</p>
+
+<table>
+<thead>
+<tr>
+<th>*lchild</th>
+<th>ltag</th>
+<th>data</th>
+<th>rtag</th>
+<th>*rchild</th>
+</tr>
+</thead>
+<tbody></tbody>
+</table><ul>
+<li>ltag 为0时，指向该结点的左子结点，为1时是指向该节点的前驱。</li>
+<li>rtag为0时，指向该节点的右子结点，为1时是指向该节点的后继。</li>
+</ul>
+<p>代码参照BiThrTree.cpp</p>
+<h3 id="树、森林及二叉树转换">7.2 树、森林及二叉树转换</h3>
+<p>一个任意形态的树，一个结点是可以有任意多个子结点的，这样的话问题就会复杂很多，所以才从二叉树的研究入手，划分出了完全二叉树、满二叉树。可以参考 <a href="https://www.bilibili.com/video/BV1jW411K7yg?p=51">小甲鱼《数据结构与算法》51节</a>，有很好的动画展示。</p>
+<p><strong>将普通树转换为二叉树</strong></p>
+<p>(1) 树中所有的兄弟结点之间加一条连线。(2) 对于每个结点，除了保留与长子的连线外，去掉该结点与其他子结点的连线。(3) 最后改变形态变成二叉树。</p>
+<p><strong>森林转化为二叉树</strong></p>
+<p>(1) 运用上面的方法，先将森林中每一棵树变成二叉树。(2) 他们的根全部相连调整形态，完成。</p>
+<p><strong>二叉树到树、森林</strong>（逆向）</p>
+<p>(1) 若结点x是其双亲y的左孩子，则把x的右孩子，右孩子的右孩子，…（以此类推），都与y连接起来。(2) 去掉所有双亲到右孩子的连线。</p>
+<p><strong>树的遍历</strong>有两种方式，一种是先根遍历，另一种是后根遍历：</p>
+<ul>
+<li><strong>先根遍历</strong>：先访问树的根结点，然后再依次先根遍历没棵子树。</li>
+<li><strong>后根遍历</strong>：先依次遍历每一颗树，然后再访问根结点。<br>
+<img src="https://user-images.githubusercontent.com/26374671/80370979-1b3e6000-88cc-11ea-8d4f-400d75bb1dc6.png" alt="树的遍历"></li>
+</ul>
+<p><strong>森林的遍历</strong>同样是两种方式，一种是前序遍历，另一种是后序遍历，一棵棵树依次来。</p>
+<p><strong>Remark</strong>：树、森林的先根遍历、前序遍历，和<strong>转换后的二叉树</strong>的前序遍历结果相同；树、森林的后根遍历、后序遍历，和<strong>转换后的二叉树</strong>的中序遍历结果相同。</p>
+<h3 id="赫夫曼编码（huffman-coding）">7.3 赫夫曼编码（Huffman Coding）</h3>
+<p><strong>赫夫曼编码</strong>是首个使用的压缩编码方案，也是知名的无损编码方案。利用霍夫曼编码可以构造出一种不等长的二进制数，能够使内容变短且不产生二义性。</p>
+<p><strong>赫夫曼树</strong></p>
+<p>将二叉树变成一个连接（edge）上带权重的树，我们提出下面的概念：</p>
+<ul>
+<li><strong>结点路径长度</strong>：从根结点到某一结点的路径上的连接数。</li>
+<li><strong>树的路径长度</strong>：树中每个叶子结点的路径长度之和。</li>
+<li><strong>结点带权路径长度</strong>：结点的路径长度与结点权值的乘积。</li>
+<li><strong>树的带权路径长度</strong>：Weighted Path Length (WPL) 是树中所有叶子结点的带权路径长度之和。</li>
+</ul>
+<p>如果权重表示的是会经过这条连接的概率（或程序运行比例），那么二叉树的WPL越小，则说明二叉树的性能会更好。</p>
+<p>举例说明，一个班上成绩分部设定为A:10%, B:20%, C:60%, D:10%。那么如果输入一个成绩，先判断是否A，接着判断B，再C，最后D。那么有70%的成绩会在判断是否A和B的时候浪费计算性能，如果将程序倒过来，则可以提高性能。</p>
+<p>这样一个判断程序其实就是二叉树（判断成功就到达叶子结点），而<strong>赫夫曼树</strong>是找到一个<strong>WPL最小的最优二叉树</strong>。<br>
+最简单的构造方法就是，首先将权值最小的2个叶结点用一个亲结点连接；然后，这个亲结点再和候选叶结点里权值最小的1个叶结点，用一个亲结点连接；依次类推向上延伸，这样可以保证权值越小的叶结点路径长路越长，使WPL最小。</p>
+<p><strong>赫夫曼编码</strong></p>
+<p>根据日常使用字符的频率，把英文字符和标点存入二叉树，使用频率越高的在越高的位置。可以有效压缩数据，节省20%~90%的空间，压缩率取决于数据的特性。</p>
+<ul>
+<li><strong>定长编码</strong>：例如ASCII编码，定长的8bit来表示字符内容。</li>
+<li><strong>变长编码</strong>：单个编码长度可以不一致，可以根据整体出现频率来调节（发的内容而定）。</li>
+<li><strong>前缀码</strong>：prefix code，本质也是变长编码，但没有任何码字是其他码字的前缀，不会出现二义性。举例{10, 111, 110}这三个码字就符合前缀码，而{10, 101, 110, 1001}这四个码字就不属于，因为10做了101和1001的前缀。好处是可以将字码连在一起输出，从而节约空间，解码时不产生二义性。比如{010, 0111, 011001}，如果想依次输出这三个字符，连在一起也能被解码出来三个字符。</li>
+</ul>
+<p><strong>赫夫曼编码的设计流程：</strong></p>
+<ol>
+<li>构建Priority queue，按照字符出现的频率排序；</li>
+<li>构建Huffman Tree，依照简单的方法构造赫夫曼树，频率越高在树的上层，越低的在下层；</li>
+<li>构建Huffman Table，左子树0，右子树1，推出每一个字符的编码。</li>
+<li>编码算法程序Encode，将文本对应table编码。</li>
+<li>解码算法程序Decode，将编码对应table解码成文本。</li>
+</ol>
+<p>参考HuffmanCode的项目文件。</p>
+</div>
+</body>
+
+</html>
