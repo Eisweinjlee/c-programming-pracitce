@@ -1,0 +1,101 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>9. Graph 2</title>
+  <link rel="stylesheet" href="https://stackedit.io/style.css" />
+</head>
+
+<body class="stackedit">
+  <div class="stackedit__html"><h2 id="图的遍历和算法">9. 图的遍历和算法</h2>
+<p>图的遍历要比前面学习的任何结构都复杂。图的任何一个顶点都没有次序关系，遍历的时候很容易错过或者遗漏某个顶点，而且在遍历效率上也会因为有些条件而变得复杂。</p>
+<p>对于图的遍历，为了避免遗漏的情况，就需要科学地设计方案，这里有两种遍历次序方案：深度优先遍历和广度优先遍历。</p>
+<h3 id="深度优先遍历">9.1 深度优先遍历</h3>
+<p><strong>深度优先遍历（Depth First Search, DFS）</strong>，也称作深度优先搜索。算法会优先地往远的地方搜索，当搜索到尽头处时，再回溯到分支结点再次进行深度搜索，如此可以进行一个递归的操作。（深度优先遍历本质上类似于树的前序遍历）</p>
+<p><strong>算法思路：</strong><br>
+选定初始点，标记到达，然后按照某种规则选择一个邻接点；判断这个邻接点是否到达过？是则按照某种规则选下一顺序的邻接点，否则到达这个点；如果所在顶点的所有邻接点都已经到达过，回溯到上一个顶点，再按照某种规则选择邻接点。直至所有点都访问过。<br>
+<img src="https://user-images.githubusercontent.com/26374671/80908462-fed27580-8d5a-11ea-8475-6257a217fbf4.png" alt="DFS"><br>
+如图所示，从A开始，次序规则是“下标小的优先”，则DFS遍历这个图的过程是：A-B-C-D-E-F-G-H-I，在H点的时候，D、E、G都已经被标记到达过了，所以开始执行回溯：检查G是否有没到达的邻接点，再是F，再是E，再到D，发现D有邻接点没被访问，前往I。这种思路可以简单地使用邻接矩阵来完成。</p>
+<p><strong>例子：马踏棋盘算法–骑士周游问题</strong></p>
+<p>国际象棋的8X8方格棋盘，可以将“马（骑士）”放在任意一个方格中，按照走棋规则，可以不重复访问同一个方格，完成遍历棋盘每一个方格。</p>
+<p>利用和DFS思维相似的<strong>回溯法</strong>完成，即一条路走到黑。一直像深处搜索，直到某个位置已经走到死路了，回溯到有别的选项的顶点，改一条路再尝试。最终可以得到<strong>哈密尔顿路径</strong>，即可以用一条轨迹，不重复访问地走过图中的每一个顶点。</p>
+<h3 id="广度优先遍历">9.2 广度优先遍历</h3>
+<p><strong>广度优先遍历（Breadth First Search）</strong>，又称广度优先搜索，简称BFS。优先扩大搜索范围，属于从浅入深的搜索逻辑。类似于树的层序遍历逻辑。</p>
+<p><img src="https://user-images.githubusercontent.com/26374671/80941757-3d7d3400-8e1e-11ea-8ddc-3bab3c79a1a0.png" alt="image"></p>
+<p><strong>算法思路</strong></p>
+<p>和深度优先所用的同样的一张图，我们可以按照层来重新放置，就可以得到右边的图。按照序号下标优先的原则，当从A开始，有两个邻接点B和F，于是就依次访问B和F；然后B有三个邻接点C、I、G依次访问；之后回到同层的F，有两个邻接点E和G，G已经访问过了所以只访问E；接着跳到第三层下标先序的C，访问邻接点D；因为G在B下面，比F下的E优先（会因为不同算法形式改变），所以再到G访问H。</p>
+<p>队列可以作为一种广度遍历的数据结构：按照层级分节，将统一层级的结点放入一个队列，然后逐个访问。</p>
+<h3 id="最小生成树">9.3 最小生成树</h3>
+<p>将一个有n个顶点的网（带权值）转化为生成树，得到的n-1条边的权值之  和是最小的时候，这个生成树称为<strong>最小生成树（Minimum Spanning Tree）</strong>。这可以被应用于在各个点间，以最小成本的方式修建道路、通讯线路等。最基本的算法有两种：普利姆算法、克鲁斯卡尔算法。</p>
+<h4 id="普利姆prim算法">9.3.1 普利姆Prim算法</h4>
+<p><img src="https://user-images.githubusercontent.com/26374671/81034456-344d9f00-8ed2-11ea-87dd-78f50c6faf6a.png" alt="image"></p>
+<p>上面的图的结构用邻接矩阵来表述。用两个一维数组来不断迭代，得到每个顶点到根结点最近的距离。</p>
+<ul>
+<li>数组1：adjvex[i]用来存储顶点i最近距离的顶点下标；</li>
+<li>数组2：lowcost[i]用来暂存目前位置走到顶点i最近的距离。</li>
+</ul>
+<p><strong>算法步骤：</strong></p>
+<ul>
+<li>初始化：随机取一个根结点。这里以V0为例（如果是Vi），将adjvex全部赋值为0（i），lowcost赋值为邻接矩阵的V0（Vi）那一行。</li>
+<li>开始迭代i=1~8：找到目前lowcost中距离最近的顶点k，则Vk和V0相连，把lowcost[k] = 0表示完成了。</li>
+<li>更新lowcost：因为Vk被连进来了，把邻接矩阵中Vk那一行的权值和目前lowcost对比。如果Vk那行更小，则<code>lowcost[j] = G.arc[k][j];</code>替换上Vk到Vj的距离，且把<code>adjvex[j]=k;</code>表示Vj离Vk的距离，比前面所有都更近。</li>
+<li>继续迭代，每次可以连接上一个顶点。</li>
+</ul>
+<p><strong>Remark:</strong> Prim算法就是在不断往下走，不断登记结点的同时更新最小权值的数组lowcost，属于一种贪心算法的思维方式，和邻接矩阵登记的图配合很好。</p>
+<h4 id="克鲁斯卡尔kruskal算法">9.3.2 克鲁斯卡尔Kruskal算法</h4>
+<p>如果我们有边集数组，知道所有边的始末和权值，那么可以用Kruskal算法直接找最短的权值加入。首先得到一个按照权值从小到大排列的边集数组。</p>
+<p><img src="https://user-images.githubusercontent.com/26374671/81041332-90232280-8ee8-11ea-951b-ea91f17793cb.png" alt="image"></p>
+<p><strong>算法思路：</strong></p>
+<p>按照边的权值，从小到大将顶点登记，如果加入这条edge不会产生环路的话，就加入；如果会产生环路的话，就舍弃。依次类推，直到全部edge都被考虑一遍。</p>
+<p>克鲁斯卡尔算法最妙的是只用了一个一维数组parent，它既可以表示顶点i的某一个同在一棵子树的下标，也可以用来判断是否产生环路，所以代码相当简单。</p>
+<p><strong>算法步骤：</strong></p>
+<ul>
+<li>
+<p>构造一个parent[MAXVEX]，数组长度是顶点个数，赋初值为0（根结点的序号）。</p>
+</li>
+<li>
+<p>开始迭代，对于每一条边i：<br>
+<code>m = Find(parent, edges[i].begin); n = Find(parent, edges[i].end);</code><br>
+Find(int* parent, int f)可以根据parent数组，迭代地追溯到，顶点f所在子树上一次加入的顶点序号（也就是说只要顶点的在同一子树，Find输出的结果就是一样的）。</p>
+</li>
+<li>
+<p>如果m==n，说明edges[i].begin和edges[i].end两个顶点已经在同一子树下了，加入这个edges[i]会构成回路，所以放弃；如果m!=n，那么加入这条edges并且<code>parent[m]=n;</code>把</p>
+</li>
+</ul>
+<p><strong>Remark:</strong> Kruskal算法以边为基础来构造，如果图是稀疏图（边的数量较少）的情况下，效率更高。但是比较密集的图的话，因为即使完成构造后还是会迭代试所有的边，效率会较低，这种情况应该考虑Prim算法。</p>
+<h3 id="最短路径搜索">9.4 最短路径搜索</h3>
+<p>最短路径在网图和非网图中，含义有所不同：</p>
+<ul>
+<li>网图中是指，两顶点间经过的边权值之和最小的路径；</li>
+<li>非网图中指，两顶点间经过边数最小的路径（所有权值为1即可）。</li>
+</ul>
+<p>我们把路径起始的顶点称为<strong>源点</strong>，最后一个顶点为<strong>终点</strong>。<br>
+在网图（有权值）中找寻顶点间最短的路径，是再直观不过的应用了。在利用路径导航、地铁换乘这类场景中，我们都需要在网中找到最短路径。这里介绍两种算法：迪杰斯特拉算法、弗洛伊德算法。</p>
+<h4 id="迪杰斯特拉dijkstra算法">9.4.1 迪杰斯特拉Dijkstra算法</h4>
+<p>这是一个采用贪心策略来一步步求出最短路径的算法，即在不断延伸路径过程中，发现更短的路径则换过去，最终获得最短路径。<br>
+<img src="https://user-images.githubusercontent.com/26374671/81050141-77bc0380-8efa-11ea-8908-38a2960a47bd.png" alt="image"></p>
+<p><strong>算法步骤</strong></p>
+<p>类似于Prim，利用两个一维数组来记录搜索进程，利用贪心策略不断前进，分别是Patharc P[]用来记录路径的下标，ShortPathTable D[]用来记录目前已知最短的路径值。</p>
+<ul>
+<li>初始化：这里假设V0是初始顶点，我们给<code>D[i]=G.arc[V0][i];</code>和<code>P[i]=0;</code>还有一个记录是否已经路过的数组<code>final[i]=0; final[V0]=1;</code>当等于1的时候表示已经路过，同时还有记录目前位置的最短距离的变量<code>min</code>。</li>
+<li>对于顶点数量开始迭代：首先先找到D[i]中最近的顶点Vk，前进。</li>
+<li>更新D和P：因为已经到达了Vk，在继续前进之前必须更新D和P。如果<code>min+G.arc[k][i] &lt; (*D)[i]</code>，即如果在Vk有到达其他所有顶点更短的路径就更新：<br>
+<code>if(!final[i] &amp;&amp; (min + G.arc[k][i]) &lt; (*D)[i])) { (*D)[i] = min + G.arc[k][i]; (*P)[i] = k; }</code><br>
+这样的话，D[i]中记录的永远是：目前为止从V0到Vi的最短距离；P[i]记录的是目前为止，到达Vi前上一个是哪个顶点。</li>
+<li>完成更新后继续迭代</li>
+</ul>
+<p><strong>Remark:</strong> Dijkstra算法的时间算法的时间复杂度是<span class="katex--inline"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><msup><mi>n</mi><mn>2</mn></msup><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(n^2)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 1.06411em; vertical-align: -0.25em;"></span><span class="mord mathdefault" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord"><span class="mord mathdefault">n</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height: 0.814108em;"><span class="" style="top: -3.063em; margin-right: 0.05em;"><span class="pstrut" style="height: 2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span></span></p>
+<h4 id="弗洛伊德floyd算法">9.4.2 弗洛伊德Floyd算法</h4>
+<p>Floyd算法的时间复杂度是<span class="katex--inline"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><msup><mi>n</mi><mn>3</mn></msup><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(n^3)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 1.06411em; vertical-align: -0.25em;"></span><span class="mord mathdefault" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord"><span class="mord mathdefault">n</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height: 0.814108em;"><span class="" style="top: -3.063em; margin-right: 0.05em;"><span class="pstrut" style="height: 2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">3</span></span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span></span>，但是我们可以通过Floyd算法得到一个顶点到所有顶点的最短路径，而且算法书写十分简洁优雅。</p>
+<p>思路上，其实就是把路径做一一对比取最小的，比如V0、V1、V2两两连接，那么V0到V2的距离就两条，最短的是：<span class="katex--display"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>D</mi><mrow><mi>m</mi><mi>i</mi><mi>n</mi></mrow></msub><mo stretchy="false">(</mo><mi>V</mi><mn>0</mn><mo separator="true">,</mo><mi>V</mi><mn>2</mn><mo stretchy="false">)</mo><mo>=</mo><mi>min</mi><mo>⁡</mo><mo stretchy="false">{</mo><mi>D</mi><mo stretchy="false">(</mo><mi>V</mi><mn>0</mn><mo separator="true">,</mo><mi>V</mi><mn>2</mn><mo stretchy="false">)</mo><mo separator="true">,</mo><mi>D</mi><mo stretchy="false">(</mo><mi>V</mi><mn>0</mn><mo separator="true">,</mo><mi>V</mi><mn>1</mn><mo stretchy="false">)</mo><mo>+</mo><mi>D</mi><mo stretchy="false">(</mo><mi>V</mi><mn>1</mn><mo separator="true">,</mo><mi>V</mi><mn>2</mn><mo stretchy="false">)</mo><mo stretchy="false">}</mo></mrow><annotation encoding="application/x-tex">D_{min}(V0,V2)=\min\{D(V0,V2),D(V0,V1)+D(V1,V2)\}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right: 0.02778em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height: 0.311664em;"><span class="" style="top: -2.55em; margin-left: -0.02778em; margin-right: 0.05em;"><span class="pstrut" style="height: 2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">m</span><span class="mord mathdefault mtight">i</span><span class="mord mathdefault mtight">n</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height: 0.15em;"><span class=""></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathdefault" style="margin-right: 0.22222em;">V</span><span class="mord">0</span><span class="mpunct">,</span><span class="mspace" style="margin-right: 0.166667em;"></span><span class="mord mathdefault" style="margin-right: 0.22222em;">V</span><span class="mord">2</span><span class="mclose">)</span><span class="mspace" style="margin-right: 0.277778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right: 0.277778em;"></span></span><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mop">min</span><span class="mopen">{</span><span class="mord mathdefault" style="margin-right: 0.02778em;">D</span><span class="mopen">(</span><span class="mord mathdefault" style="margin-right: 0.22222em;">V</span><span class="mord">0</span><span class="mpunct">,</span><span class="mspace" style="margin-right: 0.166667em;"></span><span class="mord mathdefault" style="margin-right: 0.22222em;">V</span><span class="mord">2</span><span class="mclose">)</span><span class="mpunct">,</span><span class="mspace" style="margin-right: 0.166667em;"></span><span class="mord mathdefault" style="margin-right: 0.02778em;">D</span><span class="mopen">(</span><span class="mord mathdefault" style="margin-right: 0.22222em;">V</span><span class="mord">0</span><span class="mpunct">,</span><span class="mspace" style="margin-right: 0.166667em;"></span><span class="mord mathdefault" style="margin-right: 0.22222em;">V</span><span class="mord">1</span><span class="mclose">)</span><span class="mspace" style="margin-right: 0.222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right: 0.222222em;"></span></span><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathdefault" style="margin-right: 0.02778em;">D</span><span class="mopen">(</span><span class="mord mathdefault" style="margin-right: 0.22222em;">V</span><span class="mord">1</span><span class="mpunct">,</span><span class="mspace" style="margin-right: 0.166667em;"></span><span class="mord mathdefault" style="margin-right: 0.22222em;">V</span><span class="mord">2</span><span class="mclose">)</span><span class="mclose">}</span></span></span></span></span></span>就可以在两条路径中得到最短的距离，这样我们可以从邻接矩阵算出一个D矩阵。</p>
+<p>同时，根据这样的方式，如果比较成功后我们可以记下前驱节点的序号。因此还可以得到P矩阵：<span class="katex--inline"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>P</mi><mo stretchy="false">(</mo><msub><mi>V</mi><mi>i</mi></msub><mo separator="true">,</mo><msub><mi>V</mi><mi>j</mi></msub><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">P(V_i,V_j)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height: 1.03611em; vertical-align: -0.286108em;"></span><span class="mord mathdefault" style="margin-right: 0.13889em;">P</span><span class="mopen">(</span><span class="mord"><span class="mord mathdefault" style="margin-right: 0.22222em;">V</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height: 0.311664em;"><span class="" style="top: -2.55em; margin-left: -0.22222em; margin-right: 0.05em;"><span class="pstrut" style="height: 2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height: 0.15em;"><span class=""></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right: 0.166667em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right: 0.22222em;">V</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height: 0.311664em;"><span class="" style="top: -2.55em; margin-left: -0.22222em; margin-right: 0.05em;"><span class="pstrut" style="height: 2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right: 0.05724em;">j</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height: 0.286108em;"><span class=""></span></span></span></span></span></span><span class="mclose">)</span></span></span></span></span>的数字表达了，目标是从Vi到Vj的时候，Vi的下一个顶点是哪个。</p>
+<p><strong>算法结果</strong></p>
+<p>同Dijkstra的例子，我们用邻接矩阵D0和前驱项初始矩阵P0：<br>
+<img src="https://user-images.githubusercontent.com/26374671/81064712-22412000-8f15-11ea-9eaa-1d88b80d5bac.png" alt="image"></p>
+<p>通过Floyd算法可以更新出D8矩阵和P8，D8(i,j)表示两个顶点Vi和Vj之间的最短距离，P8(i,j)表示从Vi到Vj的下一个顶点去哪里。</p>
+</div>
+</body>
+
+</html>
